@@ -7,6 +7,9 @@ on:
 jobs:
   # a free machine-readable name for this job
   deploy:
+    # Set permissions for this specific job to enable it to write to the gh-pages branch
+    permissions:
+      contents: write
     # specify the base operating system
     runs-on: ubuntu-latest 
     steps:
