@@ -1,4 +1,37 @@
-source, yaml name: Deploy pages
-source, yaml on: push: branches: - main
-source, yaml jobs: deploy: # a free machine-readable name for this job runs-on: ubuntu-latest # specify the base operating system steps: - name: Checkout repo content # fetch the contents of the repository uses: actions/checkout@v2 - name: Prepare build environment run: | # multiple Bash commands follow mkdir -p build touch build/.nojekyll
-source, yaml - name: Run pandoc uses: docker://pandoc/core:2.12 # Always specify a version! with: args: >- # multi-line argument --standalone --output=build/index.html README.md - name: Deploy on github pages # Use a third-party plugin to upload the content uses: JamesIves/github-pages-deploy-action@4.1.0 with: branch: gh-pages folder: build
+name: Deploy pages
+on: 
+  push:
+     branches:
+        - main
+jobs:
+  # a free machine-readable name for this job
+  deploy:
+    # specify the base operating system
+    runs-on: ubuntu-latest 
+    steps:
+      # fetch the contents of the repository
+      - name: Checkout repo content
+        uses: actions/checkout@v2
+
+      - name: Prepare build environment
+        # multiple Bash commands follow
+        run: |
+          mkdir -p build
+          touch build/.nojekyll
+
+      - name: Run pandoc
+        # Always specify a version!
+        uses: docker://pandoc/core:2.12
+        with:
+          # multi-line argument
+          args: >-
+            --standalone
+            --output=build/index.html
+            README.md
+
+      # Use a third-party plugin to upload the content
+      - name: Deploy on github pages
+        uses: JamesIves/github-pages-deploy-action@4.1.0
+        with:
+          branch: gh-pages
+          folder: build
